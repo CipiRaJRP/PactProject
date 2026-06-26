@@ -58,37 +58,37 @@ public class OmsProviderVerification {
     }
  
  
-    @State("Order 245 exists")
+    @State("Order 123 exists")
     void isOrderExists() {
-        wireMock.stubFor(get(urlEqualTo("/order/123"))
+        wireMock.stubFor(get(urlEqualTo("/orders/123"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody("""
-                    {"orderId": 123, "status": "CONFIRMED", "total": 42.0}
+                    {"id": 123, "status": "CONFIRMED", "total": 12.0}
                 """)));
     }
  
-    @State("Creating a new order")
+    @State("Order created for inventory")
     void createOrder() {
-        wireMock.stubFor(post(urlEqualTo("/orders/"))
+        wireMock.stubFor(post(urlEqualTo("/orders/123"))
             .withHeader("Content-Type", matching("application/json(;.*)?"))
             .willReturn(aResponse()
                 .withStatus(201)
                 .withHeader("Content-Type", "application/json")
                 .withBody("""
-                    {"statusCode": 201, "orderId": 101, "status": "CREATED", "total": 2000}
+                    {"quantity": 20, "sku": "SKU-9"}
                 """)));
     }
  
-    @State("SKU-9 has Stock")
+    @State("Sku-9 has stock")
     void getInventory() {
-        wireMock.stubFor(get(urlEqualTo("/inventory/SKU-9"))
+        wireMock.stubFor(get(urlEqualTo("/Inventory/7"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody("""
-                    {"sku": "SKU-9", "qty": 5}
+                    {"id": 7, "status": "Confirmed", "total": 42}
                 """)));
     }
 }
