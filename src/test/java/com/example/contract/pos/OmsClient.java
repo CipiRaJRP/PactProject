@@ -1,82 +1,161 @@
 package com.example.contract.pos;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.http.Header;
-import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-
-import java.net.http.HttpClient;
-import java.util.Map;
-import java.util.function.BooleanSupplier;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
+import io.restassured.response.Response;
+
+
 
 final class OmsClient {
 
 
-    private String baseUrl;
-    private HttpClient client;
+    private final String baseUrl;
 
 
-    private static final String BASE_URL = System.getProperty(
-            "baseUrl",
-            System.getenv().getOrDefault("BASE_URL", "http://localhost:4010/")
-    );
 
-    public OmsClient(String url) {
+    OmsClient(String url){
+
+        this.baseUrl = url;
 
     }
 
-    @BeforeEach
-    void setup() {
-        this.baseUrl = BASE_URL;
-        this.client = HttpClient.newHttpClient();
+
+
+
+
+    Order getOrder(int id){
+
+
+        Response response =
+                given()
+                        .baseUri(baseUrl)
+
+                        .when()
+                        .get("/orders/" + id);
+
+
+        return new Order(
+
+                response.statusCode(),
+
+                ((Number) response.path("id")).intValue(),
+
+                response.path("status"),
+
+                ((Number) response.path("total")).doubleValue()
+
+        );
+
     }
 
-    public Order getOrder(int id) {
 
-        Response response = given()
-                .baseUri(baseUrl)
-                .basePath("/orders/" + id)
-                .get();
 
-        response.then().statusCode(200);
 
-        int orderId = response.then().extract().path("id");
-        String status = response.then().extract().path("status");
-        double total = response.then().extract().path("total");
 
-        return new Order(response.statusCode(),orderId,status,total);
+
+    CreateOrder createOrder(
+            String sku,
+            int quantity
+    ){
+
+
+
+        String jsonBody =
+                """
+                {
+                  "sku":"%s",
+                  "quantity":%d
+                }
+                """.formatted(
+                        sku,
+                        quantity
+                );
+
+
+
+
+        Response response =
+                given()
+                        .baseUri(baseUrl)
+                        .contentType("application/json")
+                        .body(jsonBody)
+
+                        .when()
+                        .post("/orders/123");
+
+
+
+
+
+        return new CreateOrder(
+
+                response.statusCode(),
+
+                response.path("sku"),
+
+                response.path("quantity")
+
+        );
+
     }
 
-    public CreateOrder createOrder(String sku,int quantity){
 
-         String jsonbody = """
-                  {
-                     "sku": sku,
-                     "quantity":quantity
-                 }
-                 """;
 
-         Response response = given()
-                 .baseUri(baseUrl)
-                 .basePath("/orders")
-                 .header("Content-Type","application/json")
-                 .post();
 
-         response.then().statusCode(201);
 
-        ResponseBody body = response.getBody();
 
-        return new CreateOrder(response.statusCode(),response.getBody().path("id"),response.getBody().path("status"));
+
+    Order getInventory(int id){
+
+
+        Response response =
+                given()
+
+                        .baseUri(baseUrl)
+
+                        .when()
+
+                        .get("/Inventory/" + id);
+
+
+
+        return new Order(
+
+                response.statusCode(),
+
+                ((Number) response.path("id")).intValue(),
+
+                response.path("status"),
+
+                ((Number) response.path("total")).doubleValue()
+
+        );
+
     }
 
-    record Order(int statuscode,int orderId,String status,double total){}
 
-    record CreateOrder(int statuscode,int orderId,String status){}
+
+
+
+
+    record Order(
+            int statuscode,
+            int orderId,
+            String status,
+            double total
+    ){}
+
+
+
+
+
+    record CreateOrder(
+            int statuscode,
+            String sku,
+            int quantity
+    ){}
+
 
 }
