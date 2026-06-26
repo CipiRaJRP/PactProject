@@ -46,3 +46,14 @@ jobs:
               -Dgit.sha=${{ github.sha }} \
               -Dpact.broker.url=http://127.0.0.1:9292 \
               test
+
+      - name:  Can I deploy
+
+        env:
+            CONTRACT_VERSION: ${{ github.sha }}
+        run: |
+          pact-broker can-i-deploy \
+          --pacticipant pos-consumer \
+          --version $CONTRACT_VERSION \
+          --to-environment production \
+          --broker-base-url http://127.0.0.1:9292
