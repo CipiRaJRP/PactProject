@@ -44,21 +44,20 @@ class PosOmsConsumerPactTest {
                         "application/json"
                 )
                 .body(new PactDslJsonBody()
-                        .integerType("id",123)
-                        .stringType("status","CONFIRMED")
-                        .numberType("total",12.0)
+                        .integerType("id", 123)
+                        .stringType("status", "CONFIRMED")
+                        .numberType("total", 12.0)
                 )
 
                 .toPact(V4Pact.class);
     }
 
 
-
     @Pact(
             provider = "oms-provider",
             consumer = "pos-consumer"
     )
-    V4Pact createOrder(PactDslWithProvider builder){
+    V4Pact createOrder(PactDslWithProvider builder) {
 
         return builder
 
@@ -75,8 +74,8 @@ class PosOmsConsumerPactTest {
                 )
 
                 .body(new PactDslJsonBody()
-                        .stringType("sku","SKU-9")
-                        .integerType("quantity",20)
+                        .stringType("sku", "SKU-9")
+                        .integerType("quantity", 20)
                 )
 
                 .willRespondWith()
@@ -89,21 +88,19 @@ class PosOmsConsumerPactTest {
                 )
 
                 .body(new PactDslJsonBody()
-                        .stringType("sku","SKU-9")
-                        .integerType("quantity",20)
+                        .stringType("sku", "SKU-9")
+                        .integerType("quantity", 20)
                 )
 
                 .toPact(V4Pact.class);
     }
 
 
-
-
     @Pact(
             provider = "oms-provider",
             consumer = "pos-consumer"
     )
-    V4Pact getInventoryShow(PactDslWithProvider builder){
+    V4Pact getInventoryShow(PactDslWithProvider builder) {
 
         return builder
 
@@ -123,21 +120,18 @@ class PosOmsConsumerPactTest {
                 )
 
                 .body(new PactDslJsonBody()
-                        .integerType("id",7)
-                        .stringType("status","Confirmed")
-                        .numberType("total",42)
+                        .integerType("id", 7)
+                        .stringType("status", "Confirmed")
+                        .numberType("total", 42)
                 )
 
                 .toPact(V4Pact.class);
     }
 
 
-
-
-
     @Test
     @PactTestFor(pactMethod = "getOrder")
-    void testGetOrder(MockServer mockServer){
+    void testGetOrder(MockServer mockServer) {
 
 
         OmsClient client =
@@ -148,21 +142,17 @@ class PosOmsConsumerPactTest {
                 client.getOrder(123);
 
 
-
-        assertEquals(200,order.statuscode());
-        assertEquals(123,order.orderId());
-        assertEquals("CONFIRMED",order.status());
-        assertEquals(12.0,order.total());
+        assertEquals(200, order.statuscode());
+        assertEquals(123, order.orderId());
+        assertEquals("CONFIRMED", order.status());
+        assertEquals(12.0, order.total());
 
     }
 
 
-
-
-
     @Test
     @PactTestFor(pactMethod = "createOrder")
-    void testCreateOrder(MockServer mockServer){
+    void testCreateOrder(MockServer mockServer) {
 
 
         OmsClient client =
@@ -176,21 +166,16 @@ class PosOmsConsumerPactTest {
                 );
 
 
-
-        assertEquals(201,order.statuscode());
-        assertEquals("SKU-9",order.sku());
-        assertEquals(20,order.quantity());
+        assertEquals(201, order.statuscode());
+        assertEquals("SKU-9", order.sku());
+        assertEquals(20, order.quantity());
 
     }
 
 
-
-
-
-
     @Test
     @PactTestFor(pactMethod = "getInventoryShow")
-    void testGetInventory(MockServer mockServer){
+    void testGetInventory(MockServer mockServer) {
 
 
         OmsClient client =
@@ -201,11 +186,10 @@ class PosOmsConsumerPactTest {
                 client.getInventory(7);
 
 
-
-        assertEquals(200,inventory.statuscode());
-        assertEquals(7,inventory.orderId());
-        assertEquals("Confirmed",inventory.status());
-        assertEquals(42.0,inventory.total());
+        assertEquals(200, inventory.statuscode());
+        assertEquals(7, inventory.orderId());
+        assertEquals("Confirmed", inventory.status());
+        assertEquals(42.0, inventory.total());
 
     }
 
