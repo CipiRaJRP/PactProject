@@ -1,5 +1,6 @@
 package com.example.contract.oms;
  
+import au.com.dius.pact.provider.junitsupport.loader.PactFolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,12 +24,14 @@ import au.com.dius.pact.provider.junitsupport.loader.PactBrokerConsumerVersionSe
 import au.com.dius.pact.provider.junitsupport.loader.SelectorBuilder;
  
 @Provider("oms-provider")
-@PactBroker(
-    url = "http://127.0.0.1:9292",
-    enablePendingPacts = "true",
-    providerTags = "main",
-    includeWipPactsSince = "2026-06-26"
-)
+//@PactBroker(
+//    url = "http://127.0.0.1:9292",
+//    enablePendingPacts = "true",
+//    providerTags = "main",
+//    includeWipPactsSince = "2026-06-26"
+//)
+
+@PactFolder("target/pacts")
 public class OmsProviderVerification {
     @RegisterExtension
     private static final WireMockExtension wireMock =
