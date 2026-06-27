@@ -16,19 +16,10 @@ import au.com.dius.pact.core.model.annotations.Pact;
 
 
 @ExtendWith(PactConsumerTestExt.class)
-@PactTestFor(
-        providerName = "oms-provider",
-        pactVersion = PactSpecVersion.V4
-)
+@PactTestFor(providerName = "oms-provider", pactVersion = PactSpecVersion.V4)
 class PosOmsConsumerPactTest {
-
-
-    @Pact(
-            provider = "oms-provider",
-            consumer = "pos-consumer"
-    )
+    @Pact(provider = "oms-provider", consumer = "pos-consumer")
     V4Pact getOrder(PactDslWithProvider builder) {
-
         return builder
                 .given("Order 123 exists")
 
@@ -48,17 +39,12 @@ class PosOmsConsumerPactTest {
                         .stringType("status", "CONFIRMED")
                         .numberType("total", 12.0)
                 )
-
                 .toPact(V4Pact.class);
     }
 
 
-    @Pact(
-            provider = "oms-provider",
-            consumer = "pos-consumer"
-    )
+    @Pact(provider = "oms-provider", consumer = "pos-consumer")
     V4Pact createOrder(PactDslWithProvider builder) {
-
         return builder
 
                 .given("Order created for inventory")
@@ -94,16 +80,9 @@ class PosOmsConsumerPactTest {
 
                 .toPact(V4Pact.class);
     }
-
-
-    @Pact(
-            provider = "oms-provider",
-            consumer = "pos-consumer"
-    )
+    @Pact(provider = "oms-provider", consumer = "pos-consumer")
     V4Pact getInventoryShow(PactDslWithProvider builder) {
-
         return builder
-
                 .given("Sku-9 has stock")
 
                 .uponReceiving("a request for Sku-9")
@@ -129,15 +108,12 @@ class PosOmsConsumerPactTest {
     }
 
 
+
     @Test
     @PactTestFor(pactMethod = "getOrder")
     void testGetOrder(MockServer mockServer) {
-
-
         OmsClient client =
                 new OmsClient(mockServer.getUrl());
-
-
         OmsClient.Order order =
                 client.getOrder(123);
 
@@ -153,12 +129,8 @@ class PosOmsConsumerPactTest {
     @Test
     @PactTestFor(pactMethod = "createOrder")
     void testCreateOrder(MockServer mockServer) {
-
-
         OmsClient client =
                 new OmsClient(mockServer.getUrl());
-
-
         OmsClient.CreateOrder order =
                 client.createOrder(
                         "SKU-9",
@@ -176,16 +148,11 @@ class PosOmsConsumerPactTest {
     @Test
     @PactTestFor(pactMethod = "getInventoryShow")
     void testGetInventory(MockServer mockServer) {
-
-
         OmsClient client =
                 new OmsClient(mockServer.getUrl());
 
-
         OmsClient.Order inventory =
                 client.getInventory(7);
-
-
         assertEquals(200, inventory.statuscode());
         assertEquals(7, inventory.orderId());
         assertEquals("Confirmed", inventory.status());
