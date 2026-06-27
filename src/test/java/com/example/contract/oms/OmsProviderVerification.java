@@ -25,10 +25,7 @@ import au.com.dius.pact.provider.junitsupport.loader.SelectorBuilder;
  
 @Provider("oms-provider")
 @PactBroker(
-    url = "http://127.0.0.1:9292",
-    enablePendingPacts = "true",
-    providerTags = "main",
-    includeWipPactsSince = "2026-06-26"
+    url = "http://127.0.0.1:9292"
 )
 
 //@PactFolder("target/pacts")
